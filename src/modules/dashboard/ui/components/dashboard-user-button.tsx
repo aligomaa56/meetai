@@ -41,7 +41,7 @@ export function DashboardUserButton() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="dark bg-sidebar-accent text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="bg-sidebar-accent text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
@@ -64,7 +64,7 @@ export function DashboardUserButton() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="dark bg-card text-foreground w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="bg-card text-foreground w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}

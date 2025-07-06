@@ -47,7 +47,7 @@ export function DashboardSidebar() {
   const isActive = (url: string) => pathname === url;
 
   return (
-    <Sidebar collapsible='icon' className="dark">
+    <Sidebar collapsible='icon' variant="inset">
       <SidebarHeader>
         <Link href="/" className="flex items-center gap-2 px-2 pt-2">
           <Image className="dark:invert" src="/logo.svg" alt="Meetai Logo" width={16} height={16} />
