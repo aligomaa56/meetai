@@ -95,7 +95,7 @@ export function SignUpView() {
   };
 
   return (
-    <div className="dark flex flex-col gap-6">
+    <div className="flex flex-col gap-6">
       {!!error && (
         <Alert variant="destructive">
           <OctagonAlertIcon className="h-4 w-4 !text-destructive" />
