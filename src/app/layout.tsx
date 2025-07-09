@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { TRPCReactProvider } from '@/trpc/client';
 import { Toaster } from '@/components/ui/sonner';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -21,15 +22,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <TRPCReactProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.className} antialiased`}>
+    <NuqsAdapter>      
+      <TRPCReactProvider>
+        <html lang="en" suppressHydrationWarning>
+          <body className={`${inter.className} antialiased`}>
           <ThemeProvider>
             {children}
             <Toaster />
           </ThemeProvider>
         </body>
-      </html>
-    </TRPCReactProvider>
+        </html>
+      </TRPCReactProvider>
+    </NuqsAdapter>
   );
 }
