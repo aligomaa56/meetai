@@ -1,0 +1,135 @@
+import { GetAgent } from '@/modules/agents/types';
+// import { useRouter } from 'next/navigation';
+import { useTRPC } from '@/trpc/client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { agentInsertSchema } from '@/modules/agents/schemas';
+import { z } from 'zod';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form';
+import { GeneratedAvatar } from '@/components/generated-avatar';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+
+export const AgentForm = ({
+  onSuccess,
+  onCancel,
+  initialValues,
+}: {
+  onSuccess: () => void;
+  onCancel: () => void;
+  initialValues?: GetAgent;
+}) => {
+  const trpc = useTRPC();
+//   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const createAgent = useMutation(
+    trpc.agents.createAgent.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.agents.getMyAgents.queryOptions()
+        );
+
+        if (initialValues?.id) {
+          await queryClient.invalidateQueries(
+            trpc.agents.getAgent.queryOptions({ id: initialValues.id })
+          );
+        }
+
+        onSuccess?.();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+        // TODO: chick if the error code is FORBIDDEN, redirect to upgrade
+      },
+    })
+  );
+
+  const form = useForm<z.infer<typeof agentInsertSchema>>({
+    resolver: zodResolver(agentInsertSchema),
+    defaultValues: {
+      name: initialValues?.name ?? '',
+      instructions: initialValues?.instructions ?? '',
+    },
+  });
+
+  const isEdit = !!initialValues?.id;
+  const isPending = createAgent.isPending;
+
+  const onSubmit = (values: z.infer<typeof agentInsertSchema>) => {
+    if (isEdit) {
+      console.log('TODO: Update agent');
+    } else {
+      createAgent.mutate(values);
+    }
+  };
+
+  return (
+    <Form {...form}>
+      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex items-center gap-4">
+          <GeneratedAvatar
+            seed={form.watch('name')}
+            variant="botttsNeutral"
+            className="size-16 rounded-lg"
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="e.g. 'Math assistant'" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="instructions"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Instructions</FormLabel>
+              <FormControl>
+                <Textarea
+                  {...field}
+                  placeholder="e.g. 'You are a helpful assistant that can answer questions and help with tasks.'"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex justify-between gap-2">
+          {onCancel && (
+            <Button
+              variant="ghost"
+              onClick={onCancel}
+              type="button"
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+          )}
+          <Button type="submit" disabled={isPending}>
+            {isEdit ? 'Update' : 'Create'}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+};
