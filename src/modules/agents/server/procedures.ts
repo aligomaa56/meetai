@@ -2,21 +2,60 @@ import { db } from '@/db';
 import { agents } from '@/db/schema';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { agentInsertSchema } from '../schemas';
-import { eq, getTableColumns, sql } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, ilike, sql, count} from 'drizzle-orm';
 import { z } from 'zod';
+import { 
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+  MIN_PAGE_SIZE
+} from '@/constants';
 
 export const agentsRouter = createTRPCRouter({
-  getMyAgents: protectedProcedure.query(async () => {
-    const data = await db.select().from(agents);
-    return data;
-  }),
+  getMyAgents: protectedProcedure
+    .input(
+      z.object({
+        page: z.number().default(DEFAULT_PAGE),
+        pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
+        search: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { page, pageSize, search } = input;
+      const data = await db
+        .select({
+          meetingCount: sql<number>`1`,
+          ...getTableColumns(agents),
+        })
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.session.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          )
+        )
+        .orderBy(desc(agents.createdAt), desc(agents.id))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize);
+      const [total] = await db
+        .select({ count: count() })
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.session.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          )
+        );
+      const totalPages = Math.ceil(total.count / pageSize);
+      return { items: data, total: total.count, totalPages };
+    }),
   agentGetOne: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       const [existingAgent] = await db
         .select({
           // TODO: get meeting count from meetings table
-          meetingCount: sql<number>`5`,
+          meetingCount: sql<number>`1`,
           ...getTableColumns(agents),
         })
         .from(agents)
