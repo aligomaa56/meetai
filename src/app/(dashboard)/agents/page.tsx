@@ -30,7 +30,7 @@ export default async function AgentsPage({
 
   const queryClient = getQueryClient();
   void queryClient.prefetchQuery(
-    trpc.agents.getMyAgents.queryOptions({
+    trpc.agents.getAllAgents.queryOptions({
       ...filters,
     })
   );

@@ -4,6 +4,7 @@ import ErrorState from '@/components/error-state';
 import LoadingState from '@/components/loading-state';
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 import { DataTable } from '@/modules/agents/ui/components/data-table';
 import { columns } from '@/modules/agents/ui/components/columns';
@@ -12,16 +13,23 @@ import { useAgentsFilters } from '@/modules/agents/hooks/use-agents-filters';
 import { DataPagination } from '@/modules/agents/ui/components/data-pagination';
 
 export default function AgentsView() {
-  const [ filters, setFilters ] = useAgentsFilters();
-  
+  const [filters, setFilters] = useAgentsFilters();
+  const router = useRouter();
+
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.agents.getMyAgents.queryOptions({
-    ...filters,
-  }));
+  const { data } = useSuspenseQuery(
+    trpc.agents.getAllAgents.queryOptions({
+      ...filters,
+    })
+  );
 
   return (
     <div className="flex-1 flex-col pb-4 px-4 md:px-6 flex gap-y-4">
-      <DataTable columns={columns} data={data.items} />
+      <DataTable
+        columns={columns}
+        data={data.items}
+        onRowClick={(row) => router.push(`/agents/${row.id}`)}
+      />
       <DataPagination
         totalPages={data.totalPages}
         page={filters.page}
