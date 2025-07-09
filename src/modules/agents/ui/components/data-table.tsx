@@ -22,6 +22,15 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void
 }
 
+/**
+ * Renders a generic data table with customizable columns and row click handling.
+ *
+ * Displays tabular data using the provided column definitions and data array. Each row is clickable if an `onRowClick` callback is supplied, passing the original row data to the handler. If no data is present, a message indicating "No results." is shown.
+ *
+ * @param columns - Array of column definitions describing how to render each column.
+ * @param data - Array of data objects to display in the table.
+ * @param onRowClick - Optional callback invoked with the row's data when a row is clicked.
+ */
 export function DataTable<TData, TValue>({
   columns,
   data,

@@ -9,6 +9,11 @@ import { DataTable } from '@/modules/agents/ui/components/data-table';
 import { columns } from '@/modules/agents/ui/components/columns';
 import EmptyState from '@/components/empty-state';
 
+/**
+ * Displays a table of the current user's agents, or an empty state if no agents exist.
+ *
+ * Fetches the user's agents using a suspense-enabled query and renders them in a data table. If the user has no agents, shows a prompt to create the first agent.
+ */
 export default function AgentsView() {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.agents.getMyAgents.queryOptions());
@@ -26,6 +31,9 @@ export default function AgentsView() {
   );
 }
 
+/**
+ * Displays a loading state UI indicating that the first agent is being created.
+ */
 export function AgentsViewLoading() {
   return (
     <LoadingState
@@ -35,6 +43,9 @@ export function AgentsViewLoading() {
   );
 }
 
+/**
+ * Displays an error state UI when loading the agents list fails.
+ */
 export function AgentsViewError() {
   return (
     <ErrorState

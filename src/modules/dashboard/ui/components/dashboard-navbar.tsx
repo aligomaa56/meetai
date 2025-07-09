@@ -7,6 +7,11 @@ import { DashboardThemeToggle } from '@/modules/dashboard/ui/components/dashboar
 import { SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+/**
+ * Renders the dashboard navigation bar with a sidebar trigger, search button, and theme toggle.
+ *
+ * Includes keyboard shortcut support (Cmd+K or Ctrl+K) to open or close the dashboard command palette.
+ */
 export function DashboardNavbar() {
   const [commandOpen, setCommandOpen] = useState(false);
   useEffect(() => {

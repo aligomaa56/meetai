@@ -2,6 +2,12 @@ import { Inbox } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
+/**
+ * Displays a centered empty state card with an icon, optional title and description, and a prompt to create a new item.
+ *
+ * @param title - Optional heading text to display in the card
+ * @param description - Optional descriptive text to display below the title
+ */
 export default function EmptyState({
   title,
   description,
