@@ -1,4 +1,4 @@
-import { GetAgent } from '@/modules/agents/types';
+import { AgentGetOne } from '@/modules/agents/types';
 // import { useRouter } from 'next/navigation';
 import { useTRPC } from '@/trpc/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -28,7 +28,7 @@ export const AgentForm = ({
 }: {
   onSuccess: () => void;
   onCancel: () => void;
-  initialValues?: GetAgent;
+  initialValues?: AgentGetOne;
 }) => {
   const trpc = useTRPC();
 //   const router = useRouter();
@@ -43,7 +43,7 @@ export const AgentForm = ({
 
         if (initialValues?.id) {
           await queryClient.invalidateQueries(
-            trpc.agents.getAgent.queryOptions({ id: initialValues.id })
+            trpc.agents.agentGetOne.queryOptions({ id: initialValues.id })
           );
         }
 

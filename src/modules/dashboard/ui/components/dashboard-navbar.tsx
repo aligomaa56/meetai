@@ -23,7 +23,7 @@ export function DashboardNavbar() {
   return (
     <>
       <DashboardCommand open={commandOpen} setOpen={setCommandOpen} />
-      <nav className="flex px-4 gap-x-2 items-center py-3 border-b border-border bg-background">
+      <nav className="flex px-4 md:px-6 gap-x-2 items-center py-3 border-b border-border bg-background">
         <SidebarTrigger className="size-8 text-muted-foreground hover:text-foreground" />
         <Button
           className="h-8 w-[240px] justify-start font-normal text-foreground hover:text-foreground bg-card hover:bg-accent border-border"

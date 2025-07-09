@@ -3,23 +3,34 @@
 import ErrorState from '@/components/error-state';
 import LoadingState from '@/components/loading-state';
 import { useTRPC } from '@/trpc/client';
-
 import { useSuspenseQuery } from '@tanstack/react-query';
+
+import { DataTable } from '@/modules/agents/ui/components/data-table';
+import { columns } from '@/modules/agents/ui/components/columns';
+import EmptyState from '@/components/empty-state';
 
 export default function AgentsView() {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(
-    trpc.agents.getMyAgents.queryOptions()
-  );
+  const { data } = useSuspenseQuery(trpc.agents.getMyAgents.queryOptions());
 
-  return <div>{JSON.stringify(data, null, 2)}</div>;
+  return (
+    <div className="flex-1 flex-col pb-4 px-4 md:px-6 flex gap-y-4">
+      <DataTable columns={columns} data={data} />
+      {data.length === 0 && (
+        <EmptyState
+          title="No agents found"
+          description="Create an agent to enjoy your first meeting, each agent is a unique AI assistant that can help you with your tasks, and follow your instructions."
+        />
+      )}
+    </div>
+  );
 }
 
 export function AgentsViewLoading() {
   return (
     <LoadingState
-      title="Loading agents"
-      description="Please wait while we load your agents"
+      title="Creating your first agent"
+      description="Create an agent to get started"
     />
   );
 }
