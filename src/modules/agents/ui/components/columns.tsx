@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { GetOneAgent } from '@/modules/agents/types';
+import { GetAllAgents } from '@/modules/agents/types';
 import { GeneratedAvatar } from '@/components/generated-avatar';
 import { CornerDownRightIcon, VideoIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const columns: ColumnDef<GetOneAgent>[] = [
+export const columns: ColumnDef<GetAllAgents[number]>[] = [
   {
     accessorKey: 'name',
     header: 'Agent Name',
