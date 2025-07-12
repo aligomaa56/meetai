@@ -22,7 +22,7 @@ export const CommandSelect = ({
 }: {
   options: Array<{ id: string; value: string; children: ReactNode }>;
   onSelect: (value: string) => void;
-  onSearch: (value: string) => void;
+  onSearch?: (value: string) => void;
   value: string;
   placeholder?: string;
   className?: string;
@@ -30,27 +30,34 @@ export const CommandSelect = ({
   const [open, setOpen] = useState(false);
   const selectedOption = options.find((option) => option.value === value);
 
+  const handelOpenChange = (open: boolean) => {
+    if (!open) {
+      onSearch?.('');
+    }
+    setOpen(open);
+  };
+
   return (
     <>
       <Button
         type="button"
         variant="outline"
         className={cn(
-          'w-full justify-between',
+          'w-full justify-between overflow-hidden',
           !selectedOption && 'text-muted-foreground',
           className
         )}
         onClick={() => setOpen(true)}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           {selectedOption?.children ?? placeholder}
         </div>
-        <ChevronsUpDownIcon className="size-4" />
+        <ChevronsUpDownIcon className="size-4 flex-shrink-0" />
       </Button>
       <CommandResponsiveDialog
         shouldFilter={!onSearch}
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={handelOpenChange}
       >
         <CommandInput
           placeholder="Search..."

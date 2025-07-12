@@ -11,8 +11,14 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { loadSearchParams } from '@/modules/meetings/params';
+import { SearchParams } from 'nuqs/server';
 
-export default async function MeetingsPage() {
+export default async function MeetingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -21,9 +27,13 @@ export default async function MeetingsPage() {
     redirect('/sign-in');
   }
 
+  const filters = await loadSearchParams(searchParams);
+
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(
-    trpc.meetings.getAllMeetings.queryOptions({})
+    trpc.meetings.getAllMeetings.queryOptions({
+      ...filters,
+    })
   );
 
   return (

@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { agents } from '@/db/schema';
+import { agents, meetings } from '@/db/schema';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { agentInsertSchema, agentUpdateSchema } from '../schemas';
 import { and, desc, eq, getTableColumns, ilike, sql, count } from 'drizzle-orm';
@@ -53,6 +53,44 @@ export const agentsRouter = createTRPCRouter({
         );
       const totalPages = Math.ceil(total.count / pageSize);
       return { items: data, total: total.count, totalPages };
+    }),
+
+  getAgentsWithMeetings: protectedProcedure
+    .input(
+      z.object({
+        pageSize: z
+          .number()
+          .min(MIN_PAGE_SIZE)
+          .max(MAX_PAGE_SIZE)
+          .default(DEFAULT_PAGE_SIZE),
+        search: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { pageSize, search } = input;
+      const data = await db
+        .select({
+          id: agents.id,
+          name: agents.name,
+          instructions: agents.instructions,
+          userId: agents.userId,
+          createdAt: agents.createdAt,
+          updatedAt: agents.updatedAt,
+          meetingCount: sql<number>`COUNT(${meetings.id})`,
+        })
+        .from(agents)
+        .innerJoin(meetings, eq(agents.id, meetings.agentId))
+        .where(
+          and(
+            eq(agents.userId, ctx.session.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined
+          )
+        )
+        .groupBy(agents.id, agents.name, agents.instructions, agents.userId, agents.createdAt, agents.updatedAt)
+        .orderBy(desc(agents.createdAt), desc(agents.id))
+        .limit(pageSize);
+      
+      return { items: data };
     }),
 
   getOneAgent: protectedProcedure
