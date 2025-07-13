@@ -14,6 +14,10 @@ import { useRouter } from 'next/navigation';
 import { useConfirm } from '@/hooks/use-confirm';
 import { UpdateMeetingDialog } from '../components/update-meeting-dialog';
 import { useState } from 'react';
+import { UpcomingState } from '../components/upcoming-state';
+import { ActiveState } from '../components/active-state';
+import { CancelledState } from '../components/cancelled-state';
+import { ProcessingState } from '../components/processing-state';
 
 export const MeetingView = ({ meetingId }: { meetingId: string }) => {
   const trpc = useTRPC();
@@ -55,6 +59,12 @@ export const MeetingView = ({ meetingId }: { meetingId: string }) => {
     deleteMeeting.mutate({ id: meetingId });
   };
 
+  // const isCompleted = data.status === 'completed';
+  const isCancelled = data.status === 'cancelled';
+  const isProcessing = data.status === 'processing';
+  const isUpcoming = data.status === 'upcoming';
+  const isActive = data.status === 'active';
+
   return (
     <div className="flex-1 flex-col pb-4 px-4 md:px-6 flex gap-y-6">
       <RemoveMeetingConfirmation />
@@ -71,6 +81,18 @@ export const MeetingView = ({ meetingId }: { meetingId: string }) => {
         }}
         onRemove={handleRemoveMeeting}
       />
+      <div className="space-y-6">
+        {isUpcoming && (
+          <UpcomingState
+            meetingId={meetingId}
+            onCancelMeeting={() => {}}
+            isCancelled={false}
+          />
+        )}
+        {isActive && <ActiveState meetingId={meetingId} />}
+        {isCancelled && <CancelledState />}
+        {isProcessing && <ProcessingState />}
+      </div>
     </div>
   );
 };

@@ -37,6 +37,7 @@ export const MeetingsView = () => {
         <EmptyState
           title="No meetings found"
           description="Create a meeting to enjoy your first meeting, each meeting is a unique AI assistant that can help you with your tasks, and follow your instructions."
+          cta="Get started by creating your first item"
         />
       )}
     </div>

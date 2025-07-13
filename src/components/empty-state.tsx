@@ -1,13 +1,17 @@
-import { Inbox } from 'lucide-react';
+import { Inbox, LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 export default function EmptyState({
   title,
   description,
+  icon: Icon = Inbox,
+  cta,
 }: {
   title?: string;
   description?: string;
+  icon?: LucideIcon;
+  cta?: string;
 }) {
   return (
     <div className="flex items-center justify-center min-h-96 w-full p-6">
@@ -15,7 +19,7 @@ export default function EmptyState({
         <CardHeader className="pb-4">
           <div className="flex justify-center mb-4">
             <div className="rounded-lg bg-muted p-4">
-              <Inbox className="h-12 w-12 text-muted-foreground" />
+              <Icon className="h-12 w-12 text-muted-foreground" />
             </div>
           </div>
           {title && <CardTitle className="text-xl">{title}</CardTitle>}
@@ -25,12 +29,14 @@ export default function EmptyState({
             </CardDescription>
           )}
         </CardHeader>
-        
+
         <CardContent className="pt-0">
           <Separator className="mb-4" />
-          <p className="text-xs text-muted-foreground">
-            Get started by creating your first item
-          </p>
+          {cta && (
+            <p className="text-xs text-muted-foreground">
+              {cta}
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>
