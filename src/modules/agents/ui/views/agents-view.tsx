@@ -39,6 +39,7 @@ export default function AgentsView() {
         <EmptyState
           title="No agents found"
           description="Create an agent to enjoy your first meeting, each agent is a unique AI assistant that can help you with your tasks, and follow your instructions."
+          cta="Get started by creating your first item"
         />
       )}
     </div>
