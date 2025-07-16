@@ -8,11 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "dev:webhook": "ngrok http --url=gnu-sought-whale.ngrok-free.app 3000"
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.3",
     "@dicebear/core": "^9.2.3",
+    "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.1.1",
     "@neondatabase/serverless": "^1.0.1",
     "@radix-ui/react-accordion": "^1.2.11",
@@ -50,6 +52,7 @@
     "@trpc/tanstack-react-query": "^11.4.3",
     "@types/humanize-duration": "^3.27.4",
     "better-auth": "^1.2.12",
+    "bufferutil": "^4.0.9",
     "class-variance-authority": "^0.7.1",
     "client-only": "^0.0.1",
     "clsx": "^2.1.1",
@@ -77,7 +80,9 @@
     "server-only": "^0.0.1",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
+    "utf-8-validate": "^6.0.5",
     "vaul": "^1.1.2",
+    "ws": "^8.18.3",
     "zod": "^3.25.74"
   },
   "devDependencies": {
@@ -86,6 +91,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
